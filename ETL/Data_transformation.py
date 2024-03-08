@@ -1,12 +1,7 @@
 import os
-import shutil
-from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-import numpy as np
 import pandas as pd
 import re
-import datetime
-import time
 import xlrd
 import streamlit as st
 import plotly.express as px
@@ -223,6 +218,9 @@ def summarization_data(fold):
            'ITR': 'ITR',
            'LC8796': 'Outros'}
     df_pivoted['CATEGORIA'] = df_pivoted.REPASSE.map(map)
+    cat_vars = df_pivoted.dtypes[df_pivoted.dtypes == 'O'].index
+    for var in cat_vars:
+        df_pivoted[var] = df_pivoted[var].astype('category')
     df_pivoted.to_parquet('./DATASETS/summarized_data.parquet')
     return df_pivoted
 

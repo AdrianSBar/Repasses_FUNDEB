@@ -2,14 +2,8 @@ import os
 import shutil
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-import numpy as np
-import pandas as pd
-import re
 import datetime
 import time
-import xlrd
-import streamlit as st
-import plotly.express as px
 
 
 # EXTRAÇÃO DOS DADOS
