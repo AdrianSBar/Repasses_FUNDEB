@@ -1,1 +1,2 @@
 # Repasses_FUNDEB
+- Os dados são disponibilizados em planilhas excel por ano através do link: https://www.tesourotransparente.gov.br/publicacoes/transferencias-ao-fundo-de-manutencao-e-desenvolvimento-da-educacao-basica-fundeb/2023/114?ano_selecionado=2023
