@@ -1,16 +1,13 @@
 import streamlit as st
 import pandas as pd
 import datetime
+from ETL.Data_transformation import *
 
 
 # Configurações da página
 st.set_page_config(page_title='App repasses FUNDEB',
                    page_icon='🧊',
                    layout='wide')
-# BARRA LATERAL
-with st.sidebar:
-    st.markdown('# Home')
-    st.write('Seja bem vindo!')
 
 
 # MENU PRINCIPAL
@@ -23,6 +20,12 @@ def load_data(path):
     return df
 
 
+# Conversão dos dados para arquivo de download
+@st.cache_data
+def convert_df(df):
+    return df.to_csv().encode('utf8')
+
+
 # Texto menu principal - informações sobre o app
 corrent_year = datetime.datetime.today().year
 st.write('# Bem vindo(a)!')
@@ -30,11 +33,6 @@ st.write(
     f'Nesse app você pode encontrar informações acerca dos repasses financeiros recebidos pelo FUNDEB por estado de 2007 à {corrent_year}! Tanto para as esferas estaduais, quanto para as municipais.')
 st.write(
     'As informações foram extraídas do site [gov.com](https://www.tesourotransparente.gov.br/publicacoes/transferencias-ao-fundo-de-manutencao-e-desenvolvimento-da-educacao-basica-fundeb/2023/114?ano_selecionado=2023).')
-
-
-@st.cache_data
-def convert_df(df):
-    return df.to_csv().encode('utf8')
 
 
 # Visualização dos dados caso necessário
@@ -74,6 +72,15 @@ if checkbox_1:
                                          options=sorted(df.CATEGORIA.unique()),
                                          placeholder='Selecione algum Recurso')
 
+        # Botão de download dos arquivo principal
+        file = convert_df(df=df)
+        st.download_button(
+            label='Download dos dados',
+            data=file,
+            file_name='dados.csv',
+            mime='text/csv'
+        )
+
     # Aplicando filtros apenas para visualização
     temp = df.copy()
     if spheres_filter:
@@ -82,20 +89,22 @@ if checkbox_1:
         temp = temp[temp.UF.isin(states_filter)]
     if transfer_filter:
         temp = temp[temp.CATEGORIA.isin(transfer_filter)]
-
     st.dataframe(temp, use_container_width=True)
 
 
-# Botão de download dos arquivo principal
-st.write('Caso necessite, segue o arquivo consolidado completo para download:')
-file = convert_df(df=df)
-st.download_button(
-    label='Download',
-    data=file,
-    file_name='dados.csv',
-    mime='text/csv'
-)
+else:
+    with st.sidebar:
+        st.markdown('# Home')
+        st.write('Seja bem vindo!')
 
+        # Botão de download dos arquivo principal
+        file = convert_df(df=df)
+        st.download_button(
+            label='Download dos dados',
+            data=file,
+            file_name='dados.csv',
+            mime='text/csv'
+        )
 
 # # Dúvidas e sugestões
 # st.write('Caso haja alguma duvida ou sugestão:')

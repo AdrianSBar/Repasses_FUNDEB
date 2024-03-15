@@ -20,6 +20,12 @@ def load_data(path):
     return df
 
 
+# Conversão dos dados para arquivo de download
+@st.cache_data
+def convert_df(df):
+    return df.to_csv().encode('utf8')
+
+
 # Dados
 df = load_data(path='./DATASETS/summarized_data.parquet')
 
@@ -74,6 +80,15 @@ with st.sidebar:
     if transfer_filter:
         filter = df.CATEGORIA.isin(transfer_filter)
         df = df[filter]
+
+    # Botão de download dos arquivo principal
+    file = convert_df(df=df)
+    st.download_button(
+        label='Download dos dados',
+        data=file,
+        file_name='dados.csv',
+        mime='text/csv'
+    )
 
 
 # Dados agrupados mensalmente
