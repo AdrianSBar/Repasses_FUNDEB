@@ -1,29 +1,14 @@
 import streamlit as st
 import pandas as pd
 import datetime
-from ETL.Data_transformation import *
+from PROJECT_LIBRARY.Data_transformation import *
+from PROJECT_LIBRARY.Project_functions import *
 
 
 # Configurações da página
 st.set_page_config(page_title='App repasses FUNDEB',
                    page_icon='🧊',
                    layout='wide')
-
-
-# MENU PRINCIPAL
-# arquivo
-@st.cache_data
-def load_data(path):
-    df = pd.read_parquet(path=path)
-    df.index = df['COMPETÊNCIA']
-    df.drop(labels='COMPETÊNCIA', axis='columns', inplace=True)
-    return df
-
-
-# Conversão dos dados para arquivo de download
-@st.cache_data
-def convert_df(df):
-    return df.to_csv().encode('utf8')
 
 
 # Texto menu principal - informações sobre o app
@@ -89,7 +74,7 @@ if checkbox_1:
         temp = temp[temp.UF.isin(states_filter)]
     if transfer_filter:
         temp = temp[temp.CATEGORIA.isin(transfer_filter)]
-    st.dataframe(temp, use_container_width=True)
+    st.dataframe(temp)
 
 
 else:
