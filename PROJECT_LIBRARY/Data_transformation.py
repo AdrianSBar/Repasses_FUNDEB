@@ -1,5 +1,4 @@
 import os
-from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 import re
 import xlrd
