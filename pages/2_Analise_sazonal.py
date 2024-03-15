@@ -3,7 +3,6 @@ import datetime
 import pandas as pd
 import numpy as np
 import plotly.express as px
-from openai import OpenAI
 
 
 # Configurações da página
@@ -15,36 +14,29 @@ st.set_page_config(page_title='App repasses FUNDEB',
 # Carregamento dos dados
 @st.cache_data
 def load_data(path):
-    df = pd.read_csv('./data.csv',
-                     parse_dates=['COMPETÊNCIA'],
-                     index_col='COMPETÊNCIA')
-    df_e = df[(df.ESFERA == 'Estadual')]
-    # Dados agrupados mensalmente
-    df_month = df.resample('MS').sum(numeric_only=True)
-    df_month.loc[df_month['TOTAL LIQUIDO'] == 0, 'TOTAL LIQUIDO'] = np.nan
-    df_month['TOTAL ACUMULADO'] = df_month['TOTAL LIQUIDO'].cumsum()
-    df_month['dif'] = df_month['TOTAL LIQUIDO'].diff(1)
-    # Dados agrupados anualmente
-    df_year = df.resample('Y').sum(numeric_only=True)
-    df_year.loc[df_year['TOTAL LIQUIDO'] == 0, 'TOTAL LIQUIDO'] = np.nan
-    return df_e, df_month, df_year
+    df = pd.read_parquet(path=path)
+    df.index = df['COMPETÊNCIA']
+    df.drop(labels='COMPETÊNCIA', axis='columns', inplace=True)
+    return df
 
 
-# Dados
-df, df_month, df_year = load_data(path='./data.csv')
+# Dados Brutos
+df = load_data(path='./DATASETS/summarized_data.parquet')
 
 with st.sidebar:
     st.markdown("# Esfera Estadual")
     st.markdown("## Filtros")
 
-    # Aplicando filtro pelo tempo
-    col1_sb, col2_sb = st.columns(2)
+    # Filtro das esferas
+    state_level_filter = st.selectbox(label='Esfera',
+                                      options=df.ESFERA.unique())
+    filter = df.ESFERA == state_level_filter
+    df = df[filter]
 
-    with col1_sb:
-        # Filtro estadual
-        states_filter = st.multiselect(label='Estados',
-                                       options=sorted(df.UF.unique()),
-                                       placeholder='Selecione algum Estado')
+    # Filtro estadual
+    states_filter = st.multiselect(label='Estados',
+                                   options=sorted(df.UF.unique()),
+                                   placeholder='Selecione algum Estado')
     if states_filter:
         filter = df.UF.isin(states_filter)
         df = df[filter]
@@ -58,6 +50,16 @@ with st.sidebar:
         filter = df.CATEGORIA.isin(transfer_filter)
         df = df[filter]
 
+
+# Dados agrupados mensalmente
+df_month = df.resample('MS').sum(numeric_only=True)
+df_month.loc[df_month['TOTAL LIQUIDO'] == 0, 'TOTAL LIQUIDO'] = np.nan
+df_month['TOTAL ACUMULADO'] = df_month['TOTAL LIQUIDO'].cumsum()
+df_month['dif'] = df_month['TOTAL LIQUIDO'].diff(1)
+
+# Dados agrupados anualmente
+df_year = df.resample('Y').sum(numeric_only=True)
+df_year.loc[df_year['TOTAL LIQUIDO'] == 0, 'TOTAL LIQUIDO'] = np.nan
 
 # Gráfico de oscilações mensais
 fig = px.bar(data_frame=df_month,

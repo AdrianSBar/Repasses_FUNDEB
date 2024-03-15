@@ -3,7 +3,6 @@ import datetime
 import pandas as pd
 import numpy as np
 import plotly.express as px
-from openai import OpenAI
 
 
 # Configurações da página
@@ -15,14 +14,14 @@ st.set_page_config(page_title='App repasses FUNDEB',
 # Carregamento dos dados
 @st.cache_data
 def load_data(path):
-    df = pd.read_csv('./data.csv',
-                     parse_dates=['COMPETÊNCIA'],
-                     index_col='COMPETÊNCIA')
+    df = pd.read_parquet(path=path)
+    df.index = df['COMPETÊNCIA']
+    df.drop(labels='COMPETÊNCIA', axis='columns', inplace=True)
     return df
 
 
 # Dados
-df = load_data(path='./data.csv')
+df = load_data(path='./DATASETS/summarized_data.parquet')
 
 with st.sidebar:
     st.markdown("# Filtros")
@@ -32,6 +31,14 @@ with st.sidebar:
                                       options=df.ESFERA.unique())
     filter = df.ESFERA == state_level_filter
     df = df[filter]
+
+    # Filtro estadual
+    states_filter = st.multiselect(label='Estados',
+                                   options=sorted(df.UF.unique()),
+                                   placeholder='Selecione algum Estado')
+    if states_filter:
+        filter = df.UF.isin(states_filter)
+        df = df[filter]
 
     # Aplicando filtro pelo tempo
     col1_sb, col2_sb = st.columns(2)
@@ -51,22 +58,13 @@ with st.sidebar:
                                      format='DD/MM/YYYY')
     with col2_sb:
         final_date = st.date_input(label='Data final',
-                                   min_value=datetime.date(
-                                       datetime.date.today().year, 1, 1),
+                                   min_value=initial_date,
                                    max_value=datetime.date.today(),
                                    value=datetime.date.today(),
                                    format='DD/MM/YYYY')
     filter = (df.index >= str(initial_date)) & (
         df.index <= str(final_date))
     df = df[filter]
-
-    # Filtro estadual
-    states_filter = st.multiselect(label='Estados',
-                                   options=sorted(df.UF.unique()),
-                                   placeholder='Selecione algum Estado')
-    if states_filter:
-        filter = df.UF.isin(states_filter)
-        df = df[filter]
 
     # Filtro de repasse
     transfer_filter = st.multiselect(label='Categoria',
@@ -84,6 +82,7 @@ df_month.loc[df_month['TOTAL LIQUIDO'] == 0, 'TOTAL LIQUIDO'] = np.nan
 df_month['TOTAL ACUMULADO'] = df_month['TOTAL LIQUIDO'].cumsum()
 df_month['dif'] = df_month['TOTAL LIQUIDO'].diff(1)
 df_month['mean'] = df_month['TOTAL LIQUIDO'].rolling(6).mean()
+
 # Dados agrupados anualmente
 df_year = df.resample('Y').sum(numeric_only=True)
 df_year.loc[df_year['TOTAL LIQUIDO'] == 0, 'TOTAL LIQUIDO'] = np.nan
@@ -111,7 +110,7 @@ with tab1:
 
         # Plot gráfico dos repasses por fonte
         output = df.copy()
-        output = output.groupby('CATEGORIA').sum().reset_index(
+        output = output.groupby('CATEGORIA')['TOTAL LIQUIDO'].sum().reset_index(
             level=0).sort_values(by='TOTAL LIQUIDO', ascending=False)
         fig = px.bar(data_frame=output,
                      x='CATEGORIA',
@@ -151,7 +150,7 @@ with tab1:
 
         # Plot gráfico dos repasses por estado
         output = df.copy()
-        output = output.groupby('UF').sum().reset_index(
+        output = output.groupby('UF')['TOTAL LIQUIDO'].sum().reset_index(
             level=0).sort_values(by='TOTAL LIQUIDO', ascending=False)
         fig = px.bar(data_frame=output,
                      x='UF',
@@ -168,4 +167,4 @@ with tab1:
 
 
 with tab2:
-    ...
+    "Em produção..."

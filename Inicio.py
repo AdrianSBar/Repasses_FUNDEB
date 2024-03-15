@@ -17,9 +17,9 @@ with st.sidebar:
 # arquivo
 @st.cache_data
 def load_data(path):
-    df = pd.read_csv(path,
-                     parse_dates=['COMPETÊNCIA'],
-                     index_col='COMPETÊNCIA')
+    df = pd.read_parquet(path=path)
+    df.index = df['COMPETÊNCIA']
+    df.drop(labels='COMPETÊNCIA', axis='columns', inplace=True)
     return df
 
 
@@ -38,7 +38,7 @@ def convert_df(df):
 
 
 # Visualização dos dados caso necessário
-df = load_data(path='./data.csv')
+df = load_data(path='./DATASETS/summarized_data.parquet')
 checkbox_1 = st.checkbox(label='Visualizar dados')
 if checkbox_1:
     with st.sidebar:
