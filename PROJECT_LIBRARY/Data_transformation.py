@@ -176,7 +176,7 @@ def consolidation_data(fold):
     return df01
 
 
-# Acabamento final dos dados (Competência, uf, esfera, descrição, repasse, total)
+# Acabamento dos dados (Competência, uf, esfera, descrição, repasse, total)
 def summarization_data(fold):
     df = consolidation_data(fold=fold)
     # Nome das variáveis numéricas decimais
@@ -224,15 +224,60 @@ def summarization_data(fold):
     return df_pivoted
 
 
+# Acabamento final dos dados (['COMPETÊNCIA', 'UF', 'AJUSTES', 'ESFERA', 'EC123', 'COUN', 'VAAF', 'VAAR', 'VAAT', 'FPE', 'FPM', 'ICMS', 'IPI', 'IPVA', 'ITCMD', 'ITR', 'LC8796', 'Ajuste', 'TOTAL'])
+def finally_data(fold: str):
+    # Leitura dos dados
+    df = consolidation_data(fold=fold)
+    # Divisão dos dados por variável numérica
+    df_list = []
+    for col in df.columns.to_list():
+        filter = ['COMPETÊNCIA', 'UF', f'{col}']
+        data = df[filter]
+        name = col.split(sep='_')
+        if ('A' in name) or ('Ajuste' in name):
+            data['AJUSTES'] = True
+        else:
+            data['AJUSTES'] = False
+        if 'E' in name:
+            data['ESFERA'] = 'ESTADUAL'
+        elif 'M' in name:
+            data['ESFERA'] = 'MUNICIPAL'
+        else:
+            data['ESFERA'] = None
+        data.columns = ['COMPETÊNCIA', 'UF',
+                        f'{name[-1]}', 'AJUSTES', 'ESFERA']
+        data = data[['COMPETÊNCIA', 'UF', 'AJUSTES', 'ESFERA', f'{name[-1]}']]
+        df_list.append(data)
+    df_list = df_list[1:-1]
+    # Agrupamento dos dados
+    df_base = df_list[0]
+    for df_temp in df_list[1:]:
+        col = df_temp.columns[-1]
+        if col in df_base.columns.to_list():
+            df_base = pd.merge(df_base, df_temp, on=[
+                               'COMPETÊNCIA', 'UF', 'AJUSTES', 'ESFERA', col], how='outer')
+        else:
+            df_base = pd.merge(df_base, df_temp, on=[
+                               'COMPETÊNCIA', 'UF', 'AJUSTES', 'ESFERA'], how='outer')
+    # Tratamento de valores ausentes
+    df_base.fillna(0, inplace=True)
+    # Adição da coluna total
+    df_base['TOTAL'] = df_base.sum(axis='columns', numeric_only=True)
+    # Arquivamento dos dados
+    df_base.to_parquet('./DATASETS/finally_data.parquet')
+    return df_base
+
+
 # Atualização dos dados
-def upgrade_data(fold, update=True):
+def upgrade_data(fold, update=False):
     if update == True:
-        download_all_excel_datas(destiny_fold=fold)
+        try:
+            download_all_excel_datas(destiny_fold=fold)
+        except:
+            print('Erro ao efetuar download!')
+    try:
         consolidation_data(fold=fold)
         summarization_data(fold=fold)
-    else:
-        try:
-            consolidation_data(fold=fold)
-            summarization_data(fold=fold)
-        except:
-            print('Erro! Talvez não haja arquivo na pasta informada!')
+        finally_data(fold=fold)
+    except:
+        print('Erro ao gerar datasets!')
