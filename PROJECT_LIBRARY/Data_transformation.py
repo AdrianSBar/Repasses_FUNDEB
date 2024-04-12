@@ -261,6 +261,10 @@ def finally_data(fold: str):
                                'COMPETÊNCIA', 'UF', 'AJUSTES', 'ESFERA'], how='outer')
     # Tratamento de valores ausentes
     df_base.fillna(0, inplace=True)
+    # Tratamento de constantes
+    # - (Não foram identificadas constantes entre os dados)
+    # # Tratamento de duplicados
+    df_base.drop_duplicates(inplace=True)
     # Adição da coluna total
     df_base['TOTAL'] = df_base.sum(axis='columns', numeric_only=True)
     # Arquivamento dos dados
