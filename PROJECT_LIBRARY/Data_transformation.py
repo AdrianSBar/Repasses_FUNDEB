@@ -270,6 +270,7 @@ def finally_data(fold: str):
     # Agrupamento final
     df_base = df_base.groupby(['COMPETÊNCIA', 'ESFERA', 'UF', 'AJUSTES']
                               ).sum(min_count=2).reset_index().fillna(0)
+    df_base = df_base[(df_base['TOTAL'] > 0)]
     # Arquivamento dos dados
     df_base.to_parquet('./DATASETS/finally_data.parquet')
     return df_base
