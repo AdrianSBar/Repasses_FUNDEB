@@ -265,12 +265,15 @@ def finally_data(fold: str):
     # - (Não foram identificadas constantes entre os dados)
     # # Tratamento de duplicados
     df_base.drop_duplicates(inplace=True)
-    # Adição da coluna total
-    df_base['TOTAL'] = df_base.sum(axis='columns', numeric_only=True)
     # Agrupamento final
     df_base = df_base.groupby(['COMPETÊNCIA', 'ESFERA', 'UF', 'AJUSTES']
                               ).sum(min_count=2).reset_index().fillna(0)
-    df_base = df_base[(df_base['TOTAL'] > 0)]
+    # Adição da coluna total
+    df_base['TOTAL'] = df_base.sum(axis='columns', numeric_only=True)
+    # Remoção de novos valores nulos em 0 com ajustes criados
+    df_base = df_base[(df_base['TOTAL'] > 1)]
+    # Colunas em palavras minusculas
+    df_base.columns = [x.lower() for x in df_base.columns]
     # Arquivamento dos dados
     df_base.to_parquet('./DATASETS/finally_data.parquet')
     return df_base
