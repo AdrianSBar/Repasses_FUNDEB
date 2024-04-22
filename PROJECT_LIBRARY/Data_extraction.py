@@ -1,6 +1,7 @@
 import os
 import shutil
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 import datetime
 import time
@@ -10,7 +11,8 @@ import time
 # - Função de download de um arquivo excel do site por ano
 def download_one_excel_data(ano):
     # Iniciando o webdriver manager do navegador google chrome na sua ultima versão correspondente
-    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=ChromeService(
+        ChromeDriverManager().install()))
     if ano != 2022:
         # URL da página que contém o botão de download
         url = f"https://www.tesourotransparente.gov.br/publicacoes/transferencias-ao-fundo-de-manutencao-e-desenvolvimento-da-educacao-basica-fundeb/{ano}/114?ano_selecionado={ano}"
