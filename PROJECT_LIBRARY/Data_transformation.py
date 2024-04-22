@@ -274,6 +274,8 @@ def finally_data(fold: str):
     df_base = df_base[(df_base['TOTAL'] > 1)]
     # Colunas em palavras minusculas
     df_base.columns = [x.lower() for x in df_base.columns]
+    # Alteração do nome da coluna competência
+    df_base.rename({'competência': 'data'}, axis='columns', inplace=True)
     # Arquivamento dos dados
     df_base.to_parquet('./DATASETS/finally_data.parquet')
     return df_base
