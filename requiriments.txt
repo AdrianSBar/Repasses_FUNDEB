@@ -14,13 +14,16 @@ bleach @ file:///opt/conda/conda-bld/bleach_1641577558959/work
 blinker==1.7.0
 bokeh @ file:///C:/ci_311/bokeh_1676435486556/work
 Bottleneck @ file:///C:/b/abs_f05kqh7yvj/croot/bottleneck_1707864273291/work
+branca @ file:///C:/ci_311/branca_1677725401139/work
 Brotli @ file:///C:/ci_311/brotli-split_1676435766766/work
 cachetools==5.3.3
 certifi @ file:///C:/b/abs_35d7n66oz9/croot/certifi_1707229248467/work/certifi
 cffi @ file:///C:/b/abs_924gv1kxzj/croot/cffi_1700254355075/work
 chardet @ file:///C:/ci_311/chardet_1676436134885/work
 charset-normalizer @ file:///tmp/build/80754af9/charset-normalizer_1630003229654/work
-click==7.1.2
+click @ file:///C:/b/abs_f9ihnt72pu/croot/click_1698129847492/work
+click-plugins @ file:///Users/ktietz/demo/mc3/conda-bld/click-plugins_1630665883852/work
+cligj==0.7.2
 cloudpickle @ file:///C:/b/abs_3796yxesic/croot/cloudpickle_1683040098851/work
 colorama @ file:///home/conda/feedstock_root/build_artifacts/colorama_1666700638685/work
 comm @ file:///home/conda/feedstock_root/build_artifacts/comm_1704278392174/work
@@ -40,18 +43,24 @@ exceptiongroup @ file:///home/conda/feedstock_root/build_artifacts/exceptiongrou
 executing==0.8.3
 fastjsonschema @ file:///C:/ci_311/python-fastjsonschema_1679500568724/work
 fastparquet @ file:///C:/b/abs_71unmmjm1m/croot/fastparquet_1696542387319/work
+fiona==1.9.5
 Flask==1.1.4
 Flask-Cors @ file:///tmp/build/80754af9/flask_cors_1614875208036/work
+folium @ file:///C:/ci_311/folium_1677742993254/work
 fonttools==4.25.0
 fqdn==1.5.1
 frozenlist @ file:///C:/b/abs_d8e__s1ys3/croot/frozenlist_1698702612014/work
 fsspec @ file:///C:/b/abs_97mpfsesn0/croot/fsspec_1701286534629/work
 future==1.0.0
+GDAL==3.6.2
+geobr==0.2.1
+geopandas==0.14.3
 gitdb==4.0.11
 GitPython==3.1.42
 greenlet @ file:///C:/b/abs_a6c75ie0bc/croot/greenlet_1702060012174/work
 h11==0.14.0
 HeapDict @ file:///Users/ktietz/demo/mc3/conda-bld/heapdict_1630598515714/work
+html5lib==1.1
 httpcore==1.0.5
 httpx==0.27.0
 idna @ file:///C:/ci_311/idna_1676424932545/work
@@ -86,6 +95,7 @@ lesscpy==0.15.1
 levenshtein==0.12.0
 lmdb @ file:///C:/b/abs_556ronuvb2/croot/python-lmdb_1682522366268/work
 locket @ file:///C:/ci_311/locket_1676428325082/work
+lxml==5.2.1
 lz4 @ file:///C:/b/abs_064u6aszy3/croot/lz4_1686057967376/work
 markdown-it-py==3.0.0
 MarkupSafe @ file:///C:/b/abs_ecfdqh67b_/croot/markupsafe_1704206030535/work
@@ -105,6 +115,7 @@ nbclient==0.5.13
 nbconvert==6.4.5
 nbformat==5.10.2
 nest_asyncio @ file:///home/conda/feedstock_root/build_artifacts/nest-asyncio_1705850609492/work
+networkx @ file:///C:/b/abs_e6gi1go5op/croot/networkx_1690562046966/work
 nltk==3.6.3
 notebook==6.5.6
 notebook_shim @ file:///C:/b/abs_a5xysln3lb/croot/notebook-shim_1699455926920/work
@@ -135,6 +146,7 @@ pydeck==0.8.1b0
 pydot @ file:///D:/bld/pydot_1695469341895/work
 Pygments @ file:///home/conda/feedstock_root/build_artifacts/pygments_1700607939962/work
 pyparsing @ file:///C:/ci_311/pyparsing_1678502182533/work
+pyproj @ file:///C:/b/abs_d9objdxwcx/croot/pyproj_1704901312909/work
 PySocks @ file:///C:/ci_311/pysocks_1676425991111/work
 python-crfsuite==0.9.10
 python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/python-dateutil_1709299778482/work
@@ -160,6 +172,7 @@ scipy @ file:///C:/b/abs_86x0wu5rr1/croot/scipy_1710947370784/work/dist/scipy-1.
 seaborn @ file:///C:/ci_311/seaborn_1676446547861/work
 selenium==4.18.1
 Send2Trash @ file:///C:/b/abs_08dh49ew26/croot/send2trash_1699371173324/work
+Shapely==1.8.5.post1
 six @ file:///home/conda/feedstock_root/build_artifacts/six_1620240208055/work
 smmap==5.0.1
 sniffio @ file:///C:/b/abs_3akdewudo_/croot/sniffio_1705431337396/work
@@ -200,6 +213,7 @@ win-inet-pton @ file:///C:/ci_311/win_inet_pton_1676425458225/work
 wordcloud @ file:///C:/b/abs_e8bj59p5cj/croot/wordcloud_1712282496071/work
 wsproto==1.2.0
 xlrd==2.0.1
+xyzservices @ file:///C:/ci_311/xyzservices_1676434829315/work
 yarl @ file:///C:/b/abs_8bxwdyhjvp/croot/yarl_1701105248152/work
 zict @ file:///C:/b/abs_780gyydtbp/croot/zict_1695832899404/work
 zipp @ file:///home/conda/feedstock_root/build_artifacts/zipp_1695255097490/work
