@@ -1,5 +1,5 @@
 # Previsão de séries temporais
-<img src="images/fundeb.jpg">
+<img src="images/fundeb.jpeg">
 
 ## Descrição
 - Este projeto do início ao fim de ciência de dados, desde a Extração dos dados até a Análise Preditiva dos dados dos repasses financeiros ao Fundo de Manutenção e Desenvolvimento da Educação Básica e de Valorização dos Profissionais da Educação-FUNDEB.
