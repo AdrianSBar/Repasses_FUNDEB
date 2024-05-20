@@ -3,7 +3,7 @@ import datetime
 import pandas as pd
 import numpy as np
 import plotly.express as px
-from PROJECT_LIBRARY.Project_functions import *
+from src.streamlit_utils import *
 
 
 # Configurações da página
