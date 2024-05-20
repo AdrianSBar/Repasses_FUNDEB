@@ -7,7 +7,7 @@ import streamlit as st
 @st.cache_data
 def load_data(path):
     df = pd.read_parquet(path=path)
-    df.index = df['COMPETÊNCIA']
+    df.index = df['COMPETÊNCIA']  # type: ignore
     df.drop(labels='COMPETÊNCIA', axis='columns', inplace=True)
     return df
 
