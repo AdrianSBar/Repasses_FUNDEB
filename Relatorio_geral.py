@@ -6,8 +6,8 @@ import plotly.express as px
 from src.streamlit_utils import *
 
 
-# Configurações da página
-st.set_page_config(page_title='App repasses FUNDEB',
+# Configurações iniciais da página
+st.set_page_config(page_title='Repasses FUNDEB',
                    page_icon='chart_with_upwards_trend',
                    layout='wide')
 
@@ -16,13 +16,29 @@ st.set_page_config(page_title='App repasses FUNDEB',
 df = load_data(path='./data/processed/summarized_data_1.parquet')
 temp = df.copy()
 
+
+# Side bar
 with st.sidebar:
     st.markdown("# Filtros")
-
-    # Filtro das esferas
-    state_level_filter = st.selectbox(label='Esfera',
-                                      options=temp.ESFERA.unique())
-    filter = temp.ESFERA == state_level_filter
+    # Aplicando filtro pelo tempo
+    col1_sb, col2_sb = st.columns(2)
+    with col1_sb:
+        date = datetime.date(datetime.date.today().year, 1, 1)
+        initial_date = st.date_input(label='Data inicial',
+                                     min_value=datetime.date(
+                                         2007, 1, 1),
+                                     max_value=datetime.date.today(),
+                                     value=date,
+                                     format='DD/MM/YYYY')
+    with col2_sb:
+        date = datetime.date.today()
+        final_date = st.date_input(label='Data final',
+                                   min_value=initial_date,
+                                   max_value=datetime.date.today(),
+                                   value=datetime.date.today(),
+                                   format='DD/MM/YYYY')
+    filter = (temp.index >= str(initial_date)) & (
+        temp.index <= str(final_date))
     temp = temp[filter]
 
     # Filtro estadual
@@ -33,30 +49,10 @@ with st.sidebar:
         filter = temp.UF.isin(states_filter)
         temp = temp[filter]
 
-    # Aplicando filtro pelo tempo
-    col1_sb, col2_sb = st.columns(2)
-
-    with col1_sb:
-        date = datetime.date.today()
-        if date.month <= 2:
-            date = datetime.date(datetime.date.today().year-1, 1, 1)
-        else:
-            date = datetime.date(datetime.date.today().year, 1, 1)
-
-        initial_date = st.date_input(label='Data inicial',
-                                     min_value=datetime.date(
-                                         2007, 1, 1),
-                                     max_value=datetime.date.today(),
-                                     value=date,
-                                     format='DD/MM/YYYY')
-    with col2_sb:
-        final_date = st.date_input(label='Data final',
-                                   min_value=initial_date,
-                                   max_value=datetime.date.today(),
-                                   value=datetime.date.today(),
-                                   format='DD/MM/YYYY')
-    filter = (temp.index >= str(initial_date)) & (
-        temp.index <= str(final_date))
+    # Filtro das esferas
+    state_level_filter = st.selectbox(label='Esfera',
+                                      options=temp.ESFERA.unique())
+    filter = temp.ESFERA == state_level_filter
     temp = temp[filter]
 
     # Filtro de repasse
@@ -68,22 +64,23 @@ with st.sidebar:
         filter = temp.CATEGORIA.isin(transfer_filter)
         temp = temp[filter]
 
-    # Botão de download dos arquivo principal
-    file = convert_df(df=temp)
-    st.download_button(
-        label='Download dos dados',
-        data=file,
-        file_name='dados.csv',
-        mime='text/csv'
-    )
 
-
+# Dados
 # Dados agrupados mensalmente
 df_month = load_data_month(temp)
 
 # Dados agrupados anualmente
 df_year = load_data_year(temp)
 
+
+# Body
+# Cabeçalho
+st.markdown(
+    """
+    <h1 style="text-align: center;">Repasses ao FUNDEB</h1>
+    """,
+    unsafe_allow_html=True
+)
 
 # Separação em colunas
 col1, col2 = st.columns(2)
@@ -94,10 +91,12 @@ with col1:
     else:
         y = 'TOTAL LIQUIDO'
 
-    fig = px.line(data_frame=df_month,
-                  x=df_month.index,
-                  y=y,
-                  title='Total de repasses no período')
+    fig = px.line(
+        data_frame=df_month,
+        x=df_month.index,
+        y=y,
+        title='Total de repasses no período'
+    )
     fig.update_traces(hovertemplate='R$ %{y:,.2f}')
     fig.update_layout(hovermode='x unified')
     st.plotly_chart(fig, use_container_width=True)
